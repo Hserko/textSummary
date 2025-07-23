@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+server:
+    port: 8080
+knife4j:
+  enable: true
+  openapi:
+    title: Knife4j官方文档
+    description: "`我是测试`,**你知道吗**
+    # aaa"
+    email: xiaoymin@foxmail.com
+    concat: 八一菜刀
+    url: https://docs.xiaominfo.com
+    version: v4.0
+    license: Apache 2.0
+    license-url: https://stackoverflow.com/
+    terms-of-service-url: https://stackoverflow.com/
+    group:
+      test1:
+        group-name: coze
+        api-rule: package
+        api-rule-resources:
+          - com.example.demo.controller
+tika:
+  xml: classpath:config/TikaConfig.xml
+  maxFileSize: 10485760
+
