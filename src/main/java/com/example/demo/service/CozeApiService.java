@@ -4,9 +4,13 @@ package com.example.demo.service;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONUtil;
+import com.coze.openapi.client.workflows.run.RunWorkflowReq;
+import com.coze.openapi.client.workflows.run.RunWorkflowResp;
+import com.coze.openapi.service.service.CozeAPI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +26,10 @@ public class CozeApiService {
     @Value("${coze.workflow_id}")
     private String WORKFLOW_ID;
 
-    public String callCozeWorkflow(String input, String query) {
+    @Resource
+    private CozeAPI oauthCozeAPI;
+
+    public String callCozeWorkflowByHttp(String input, String query) {
         // 构建请求参数
         Map<String, Object> requestBody = new HashMap<>();
         requestBody.put("workflow_id", WORKFLOW_ID);
@@ -45,5 +52,14 @@ public class CozeApiService {
         } else {
             throw new RuntimeException("请求失败，状态码：" + response.getStatus() + "，响应信息：" + response.body());
         }
+    }
+
+    public String callCozeWorkflowBySdk(String input, String query){
+        Map<String, Object> data = new HashMap<>();
+        data.put("input",input);
+        data.put("query", query);
+        RunWorkflowReq req = RunWorkflowReq.builder().workflowID(WORKFLOW_ID).parameters(data).build();
+        RunWorkflowResp resp = oauthCozeAPI.workflows().runs().create(req);
+        return resp.getData();
     }
 }

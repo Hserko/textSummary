@@ -62,6 +62,14 @@
             <version>1.2.17</version>
         </dependency>
 
+<!--        https://www.coze.cn/open/docs/developer_guides/java_installation-->
+        <dependency>
+            <groupId>com.coze</groupId>
+            <artifactId>coze-api</artifactId>
+            <version>LATEST</version>
+        </dependency>
+
+
     </dependencies>
     <dependencyManagement>
         <dependencies>

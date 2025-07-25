@@ -2,9 +2,12 @@ package com.example.demo.controller;
 
 
 import com.example.demo.annotation.IpApiFilter;
+import com.example.demo.converter.CozeApiWorkFlowResponseConverter;
 import com.example.demo.model.dto.CozeWorkFlowRequest;
+import com.example.demo.model.dto.CozeWorkFlowResponse;
 import com.example.demo.service.CozeApiService;
 import com.example.demo.service.FileParsingService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,16 +26,24 @@ public class CozeApiController {
     @Resource
     private FileParsingService fileParsingService;
 
-    @IpApiFilter(whiteIpList = {"127.0.0.1"})
+    @Resource
+    private CozeApiWorkFlowResponseConverter cozeApiWorkFlowResponseConverter;
+
+    @IpApiFilter(whiteIpList = {"0:0:0:0:0:0:0:1"})
     @PostMapping("/summary")
-    public String Summary(@ModelAttribute CozeWorkFlowRequest cozeWorkFlowRequest){
+    public CozeWorkFlowResponse Summary(@ModelAttribute CozeWorkFlowRequest cozeWorkFlowRequest){
         MultipartFile file = cozeWorkFlowRequest.getFile();
         String text = cozeWorkFlowRequest.getText();
         String query = cozeWorkFlowRequest.getQuery();
 
-        if(file==null&&file.isEmpty()&&text.isEmpty()) throw new IllegalArgumentException("没有接收到请求");
+        if(file==null&&file.isEmpty()&&text.isEmpty()) throw new IllegalArgumentException("没有接收到文本信息");
 
         String input = fileParsingService.DocumentParse(file) + text;
-        return cozeApiService.callCozeWorkflow(input,query);
+
+        try {
+            return cozeApiWorkFlowResponseConverter.converter(cozeApiService.callCozeWorkflowBySdk(input,query));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
