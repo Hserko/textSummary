@@ -17,4 +17,5 @@ public class CozeWorkFlowRequest implements Serializable {
 
     private MultipartFile file; // 文件
 
+
 }

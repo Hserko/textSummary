@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 
 import com.example.demo.annotation.IpApiFilter;
+import com.example.demo.annotation.VerifySignature;
 import com.example.demo.converter.CozeApiWorkFlowResponseConverter;
 import com.example.demo.model.dto.CozeWorkFlowRequest;
 import com.example.demo.model.dto.CozeWorkFlowResponse;
@@ -30,6 +31,7 @@ public class CozeApiController {
     private CozeApiWorkFlowResponseConverter cozeApiWorkFlowResponseConverter;
 
     @IpApiFilter(whiteIpList = {"0:0:0:0:0:0:0:1"})
+    @VerifySignature
     @PostMapping("/summary")
     public CozeWorkFlowResponse Summary(@ModelAttribute CozeWorkFlowRequest cozeWorkFlowRequest){
         MultipartFile file = cozeWorkFlowRequest.getFile();

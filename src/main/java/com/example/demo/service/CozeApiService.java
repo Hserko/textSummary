@@ -7,6 +7,8 @@ import cn.hutool.json.JSONUtil;
 import com.coze.openapi.client.workflows.run.RunWorkflowReq;
 import com.coze.openapi.client.workflows.run.RunWorkflowResp;
 import com.coze.openapi.service.service.CozeAPI;
+import com.example.demo.exception.CozeException;
+import com.example.demo.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -60,6 +62,7 @@ public class CozeApiService {
         data.put("query", query);
         RunWorkflowReq req = RunWorkflowReq.builder().workflowID(WORKFLOW_ID).parameters(data).build();
         RunWorkflowResp resp = oauthCozeAPI.workflows().runs().create(req);
+        if(resp.getMsg().compareTo("Success")!=0) throw new CozeException(ErrorCode.UNKNOWN_ERROR,resp.getDebugURL());
         return resp.getData();
     }
 }
